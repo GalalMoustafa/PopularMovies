@@ -14,6 +14,11 @@
             app:showAsAction="always">
 
         </item>
+        <item android:id="@+id/sort_fav"
+            android:title="@string/favourites"
+            app:showAsAction="always">
+
+        </item>
     </group>
 
 </menu>

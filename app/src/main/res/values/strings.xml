@@ -1,7 +1,15 @@
 <resources>
     <string name="app_name">Popular Movies</string>
-    
+
     <string name="sort_by">Sort by</string>
     <string name="topRated">top_rated</string>
     <string name="mostPopular">popular</string>
+    <string name="favourites">favourites</string>
+    <string name="mainFragment">main</string>
+    <string name="detailsFragment">details</string>
+    <string name="review">Reviews</string>
+    <string name="trailer">Trailers</string>
+    <string name="notrailers">No Trailers Available</string>
+    <string name="noreviews">No Reviews Available</string>
+
 </resources>

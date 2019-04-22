@@ -79,7 +79,16 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.myViewHold
 
     @Override
     public int getItemCount() {
-        return movies.size();
+        if (movies == null){
+            return 0;
+        }else {
+            return movies.size();
+        }
+    }
+
+    public void setMovies(ArrayList<Movie> movies) {
+        this.movies = movies;
+        notifyDataSetChanged();
     }
 
     public class myViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

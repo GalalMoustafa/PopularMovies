@@ -8,11 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.popularmovies.Adapters.PosterAdapter;
 import com.example.popularmovies.Models.Movie;
@@ -23,37 +21,34 @@ import java.util.ArrayList;
 
 public class FragmentMovies_gv extends Fragment implements GridItemClickListener {
 
-    private ArrayList<Movie> movies;
     private View rootView;
     RecyclerView recyclerView;
     PosterAdapter adapter;
-    private Toast mToast;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         rootView = inflater.inflate(R.layout.fragment_movies_gv, container, false);
-        ((MainActivity)getActivity()).setActionBarTitle(getString(R.string.app_name));
-        checkExtras();
-        movies = new ArrayList<>();
+        getMovies();
         return rootView;
     }
 
-    private void checkExtras(){
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            movies = bundle.getParcelableArrayList("movies");
-            setRecyclerView();
+    private void getMovies() {
+        if (checkType().equals(getResources().getString(R.string.favourites))) {
+            setRecyclerView(((MainActivity) getActivity()).getMoviesDB());
+        } else {
+            setRecyclerView(((MainActivity) getActivity()).getMovies());
         }
     }
 
-    private void setRecyclerView(){
+
+    private void setRecyclerView(ArrayList<Movie> movies) {
         recyclerView = rootView.findViewById(R.id.poster_rv);
         int spanCount;
-        if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && !((MainActivity) getActivity()).mTwoPane) {
             spanCount = 4;
-        }else {
+        } else {
             spanCount = 2;
         }
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
@@ -62,24 +57,39 @@ public class FragmentMovies_gv extends Fragment implements GridItemClickListener
         recyclerView.setAdapter(adapter);
     }
 
-    private void openDetails(Fragment fragment, int i, Movie movie){
+    private String checkType() {
+        MainActivity activity = (MainActivity) getActivity();
+        String type = activity.type;
+        return type;
+    }
+
+    public void UpdateAdapter() {
+        if (checkType().equals(getResources().getString(R.string.favourites))) {
+            adapter.setMovies(((MainActivity) getActivity()).getMoviesDB());
+        } else {
+            adapter.setMovies(((MainActivity) getActivity()).getMovies());
+        }
+    }
+
+
+    private void openDetails(Fragment fragment, int i, Movie movie) {
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         Bundle bundle = new Bundle();
         bundle.putParcelable("movie", movie);
         fragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.container, fragment);
-        fragmentTransaction.addToBackStack(null);
+        if (((MainActivity) getActivity()).mTwoPane) {
+            fragmentTransaction.add(R.id.details_container, fragment);
+        } else {
+            fragmentTransaction.add(R.id.container, fragment);
+        }
+        fragmentTransaction.addToBackStack(getResources().getString(R.string.detailsFragment));
         fragmentTransaction.commit();
     }
 
     @Override
     public void onItemClickListener(int clickIndex, Movie movie) {
-        if (mToast != null) {
-            mToast.cancel();
-        }
-        String toastMessage = "Item #" + clickIndex + " clicked.";
-        mToast = Toast.makeText(getActivity(), toastMessage, Toast.LENGTH_LONG);
-        mToast.show();
         openDetails(new FragmentDetails(), clickIndex, movie);
     }
+
+
 }

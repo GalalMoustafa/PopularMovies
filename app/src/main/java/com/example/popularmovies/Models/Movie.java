@@ -1,10 +1,18 @@
 package com.example.popularmovies.Models;
 
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
+
+@Entity(tableName = "Movie")
 public class Movie implements Parcelable {
+
+    @NonNull
+    @PrimaryKey
     private String _id;
     private String _title;
     private String _poster;
